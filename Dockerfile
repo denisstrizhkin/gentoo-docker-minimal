@@ -1,4 +1,4 @@
-FROM gentoo/stage3 as builder
+FROM gentoo/stage3:latest as builder
 
 RUN emerge-webrsync \
   && echo '-*virtual/ssh'        >  /etc/portage/profile/packages \
@@ -19,11 +19,10 @@ RUN emerge-webrsync \
   && emerge -1q app-portage/cpuid2cpuflags \
   && echo "*/* $(cpuid2cpuflags)" > /etc/portage/package.use \
   && echo "*/* -nls -iconv -man -doc -gtk-doc" >> /etc/portage/package.use \
-  && emerge -c
-
-RUN emerge -eq @world \
   && emerge -c \
-  && rm -rf /var/cache/distfiles/* /var/db/repos/*
+  && emerge -eq @world \
+  && emerge -c \
+  && rm -rf /var/cache/distfiles/*
 
 FROM scratch
 
